@@ -1,16 +1,19 @@
 package model
 
-import "time"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"time"
+)
 
 type MotionRecord struct {
-	ID             string    `json:"id"`
-	ExperimentID   string    `json:"experimentId"`
-	Subject        string    `json:"subject"`
-	SensorLocation string    `json:"sensorLocation"`
-	Type           string    `json:"type"`
-	Raw            bool      `json:"raw"`
-	XRoll          float64   `json:"xRoll"`
-	YPitch         float64   `json:"yPitch"`
-	ZYaw           float64   `json:"zYaw"`
-	Timestamp      time.Time `json:"timestamp"`
+	ID             primitive.ObjectID `bson:"_id"`
+	ExperimentID   string             `bson:"experimentId"`
+	Subject        string             `bson:"subject"`
+	SensorLocation string             `bson:"sensorLocation"`
+	Type           string             `bson:"type"`
+	Raw            bool               `bson:"raw"`
+	XRoll          float64            `bson:"xRoll"`
+	YPitch         float64            `bson:"yPitch"`
+	ZYaw           float64            `bson:"zYaw"`
+	Timestamp      time.Time          `bson:"timestamp"`
 }

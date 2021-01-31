@@ -33,7 +33,6 @@ func (ms *MotionService) GetAllByExperimentId(id string) (records []model.Motion
 	}
 	defer cursor.Close(context.TODO())
 
-	records = make([]model.MotionRecord, cursor.RemainingBatchLength())
 	for cursor.Next(context.TODO()) {
 		record := model.MotionRecord{}
 		err := cursor.Decode(&record)

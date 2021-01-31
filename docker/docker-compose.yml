@@ -1,0 +1,15 @@
+---
+version: "3.8"
+
+services:
+
+  ww-sense-mongo:
+    container_name: "ww-sense-mongo"
+    image: "mongo"
+    ports:
+      - "27017:27017"
+    volumes:
+      - "ww-sense-mongo-vol:/data/db"
+
+volumes:
+  ww-sense-mongo-vol:

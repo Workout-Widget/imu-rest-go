@@ -1,83 +1,55 @@
 package main
 
 import (
-	"encoding/json"
+	"context"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
 	"net/http"
-	"workoutwidget.fit/sensehatrest/model"
+	"time"
+	"workoutwidget.fit/sensehatrest/controller"
+	"workoutwidget.fit/sensehatrest/service"
 )
 
 func main() {
 
 	server := http.Server{
-		Addr: "127/0.0.1:8080",
+		Addr: "127.0.0.1:8080",
 	}
 
-	http.HandleFunc("/record/", handleRequest)
-	server.ListenAndServe()
+	log.Println("Sense HAT REST API loading...")
+	log.Println("Creating the database connection")
+	// TODO insert mongo client here
 
-}
-
-func handleRequest(w http.ResponseWriter, r *http.Request) {
-	var err error
-	switch r.Method {
-	case "GET":
-		err = handleGet(w, r)
-	case "POST":
-		err = handlePost(w, r)
-	case "PUT":
-		err = handlePut(w, r)
-	case "DELETE":
-		err = handleDelete(w, r)
-	}
-
+	log.Println("Establishing database connection")
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017/test"))
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Fatalf("Could not connect to database! %s\n", err.Error())
 	}
-}
+	log.Println("Getting context")
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 
-func handleGet(w http.ResponseWriter, r *http.Request) (err error) {
+	log.Println("Connecting to the database")
+	err = client.Connect(ctx)
 
-	healthCheck := model.HealthCheck{
-		Service: "Sense Hat REST API",
-		Status: "Active",
+	log.Println("Instantiating Motion Controller")
+	motionController := controller.MotionController{
+		MotionRepo: &service.MotionService{
+			Client: client,
+		},
 	}
 
-	output, err := json.MarshalIndent(&healthCheck, "", "\t\t")
+	log.Println("Instantiating the Info Controller")
+	infoController := controller.InfoController{}
+
+	log.Println("Assigning handler functions...")
+	http.HandleFunc("/motion/", motionController.HandleMotionRequest)
+	http.HandleFunc("/experiment/", motionController.HandleExperimentRequest)
+	http.HandleFunc("/info/", infoController.HandleInfoRequests)
+
+	log.Println("Starting server...")
+	err = server.ListenAndServe()
 	if err != nil {
-		log.Printf("Main.handleGet(...) -> Could not marshal struct!")
+		panic(err)
 	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(output)
-
-	return
-}
-
-func handlPost(w http.ResponseWriter, r *http.Request) (err error) {
-
-	requestLength := r.ContentLength
-	bodyBytes := make([]byte, requestLength)
-
-	r.Body.Read(bodyBytes)
-
-	var gyroRecord model.GyroRecord
-	json.Unmarshal(bodyBytes, &gyroRecord)
-
-	err = writeRecordToDb(gyroRecord)
-	if err != nil {
-		w.WriteHeader(500)
-	}
-
-	w.WriteHeader(201)
-
-	return
-}
-
-func writeRecordToDb(record model.GyroRecord) (err error){
-
-	// TODO write to DB
-
-	return
 }

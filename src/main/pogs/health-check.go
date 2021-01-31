@@ -1,6 +1,6 @@
-package model
+package pogs
 
 type HealthCheck struct {
 	Service string `json:"service"`
-	Status string `json:"status"`
+	Status  string `json:"status"`
 }

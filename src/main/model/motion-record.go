@@ -2,7 +2,6 @@ package model
 
 import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"time"
 )
 
 type MotionRecord struct {
@@ -15,5 +14,6 @@ type MotionRecord struct {
 	XRoll          float64            `bson:"xRoll"`
 	YPitch         float64            `bson:"yPitch"`
 	ZYaw           float64            `bson:"zYaw"`
-	Timestamp      time.Time          `bson:"timestamp"`
+	DeviceID       string             `bson:"deviceId"`
+	Timestamp      int64              `bson:"timestamp"`
 }

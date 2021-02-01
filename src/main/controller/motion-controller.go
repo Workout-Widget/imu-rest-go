@@ -83,7 +83,7 @@ func (mc *MotionController) handlePost(w http.ResponseWriter, r *http.Request) {
 	// create struct reference to pass hold unmarshalled input
 	var motionRecord model.MotionRecord
 	if err := json.Unmarshal(bodyBytes, &motionRecord); err != nil {
-		log.Printf("MotionController.handlePost(...) -> ERROR: Could not unmarshall json. Error: %s", err)
+		log.Printf("MotionController.handlePost(...) -> ERROR: Could not unmarshall json. Error: %s\n", err.Error())
 		http.Error(w, "An unexpected error occurred.", http.StatusInternalServerError)
 		return
 	}

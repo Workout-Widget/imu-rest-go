@@ -18,18 +18,12 @@ func main() {
 	}
 
 	log.Println("Sense HAT REST API loading...")
-	log.Println("Creating the database connection")
-	// TODO insert mongo client here
-
 	log.Println("Establishing database connection")
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017/test"))
 	if err != nil {
 		log.Fatalf("Could not connect to database! %s\n", err.Error())
 	}
-	log.Println("Getting context")
 	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-
-	log.Println("Connecting to the database")
 	err = client.Connect(ctx)
 
 	log.Println("Instantiating Motion Controller")

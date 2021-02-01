@@ -3,9 +3,10 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"log"
 	"net/http"
+
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"workoutwidget.fit/sensehatrest/model"
 	"workoutwidget.fit/sensehatrest/service"
 )
@@ -74,7 +75,7 @@ func (mc *MotionController) handleGetWithoutParams(w http.ResponseWriter, r *htt
 
 func (mc *MotionController) handlePost(w http.ResponseWriter, r *http.Request) {
 
-	log.Println("Saving motion record")
+	//	log.Println("Saving motion record")
 	requestLength := r.ContentLength
 	bodyBytes := make([]byte, requestLength)
 
@@ -112,7 +113,7 @@ func (mc *MotionController) handlePost(w http.ResponseWriter, r *http.Request) {
 	}
 	*/
 
-	log.Printf("Saved record with ID: %s\n", lastInsertId)
+	//log.Printf("Saved record with ID: %s\n", lastInsertId)
 	value := fmt.Sprintf(`{"objectId": "%s"}`, lastInsertId)
 	//output, err := json.MarshalIndent(value, "", "\t\t")
 	//if err != nil {
@@ -127,6 +128,3 @@ func (mc *MotionController) handlePost(w http.ResponseWriter, r *http.Request) {
 
 	return
 }
-
-
-

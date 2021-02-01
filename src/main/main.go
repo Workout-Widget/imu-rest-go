@@ -11,26 +11,10 @@ import (
 	"workoutwidget.fit/sensehatrest/service"
 )
 
-
-func corsHandler(h http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		enableCors(&w)
-		h(w, r)
-	}
-}
-
-func enableCors(w *http.ResponseWriter) {
-
-	(*w).Header().Set("Access-Control-Allow-Origin", "*")
-	(*w).Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	(*w).Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-
-}
-
 func main() {
 
 	server := http.Server{
-		Addr: "127.0.0.1:8080",
+		Addr: "0.0.0.0:8080",
 	}
 
 	log.Println("Sense HAT REST API loading...")
@@ -59,9 +43,9 @@ func main() {
 	infoController := controller.InfoController{}
 
 	log.Println("Assigning handler functions...")
-	http.HandleFunc("/motion/", corsHandler(motionController.HandleMotionRequest))
-	http.HandleFunc("/experiment/", corsHandler(motionController.HandleExperimentRequest))
-	http.HandleFunc("/info/", corsHandler(infoController.HandleInfoRequests))
+	http.HandleFunc("/motion/", motionController.HandleMotionRequest)
+	http.HandleFunc("/experiment/", motionController.HandleExperimentRequest)
+	http.HandleFunc("/info/", infoController.HandleInfoRequests)
 
 	log.Println("Starting server...")
 	err = server.ListenAndServe()
